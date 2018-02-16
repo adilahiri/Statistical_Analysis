@@ -1,0 +1,53 @@
+---
+title: "StatPart2Inference"
+author: "Aditya Lahiri"
+date: "February 15, 2018"
+output: word_document
+---
+# PART 2
+Basic Data analysis
+```{r}
+library(datasets)
+a<-data("ToothGrowth")
+head(ToothGrowth); tail(ToothGrowth)
+```
+THE SUMMARY OF THE DATA IS BELOW
+```{r}
+summary(ToothGrowth)
+```
+
+```{r}
+str(ToothGrowth)
+unique(ToothGrowth$dose)
+library(ggplot2)
+ggplot(aes(x=dose, y = len), data = ToothGrowth) + 
+     labs(x = "Tooth Length", y = "Dosage Frequency", title = "Tooth Lengths by Dosage and Supplement") +
+    geom_point(aes(color = supp))
+ggplot(data=ToothGrowth, aes(x=as.factor(dose), y=len, fill=supp)) +
+    geom_bar(stat="identity") +
+    facet_grid(. ~ supp) +
+    xlab("Dose") +
+    ylab("Tooth Length") +
+    guides(fill=guide_legend(title="Supplement"))
+```
+It seems tooth growth is affected by increase in dosage but we need to determine which supplement contributes to this effect.
+If p value is > 0.05 and if the confidence interval crosses zero. 
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$supp=="OJ"], ToothGrowth$len[ToothGrowth$supp=="VC"], paired = FALSE, var.equal = FALSE)
+
+```
+P value is > 0.05 and cofidence inteval contains 0 thuse the null hypothesis cant be rejected 
+Testing for 1mg to 2mg dosage increase. 
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$dose==2], ToothGrowth$len[ToothGrowth$dose==1], paired = FALSE, var.equal = TRUE)
+```
+the p-value is very small, and is significant. Thus, we can reject the null hypothesis. Therefor we can assume that the dosage increase from 1mg to 2mg positively effect on tooth growth.
+Testing for 0.5mg to 1mg dosage increase. 
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$dose==1], ToothGrowth$len[ToothGrowth$dose==0.5], paired = FALSE, var.equal = TRUE)
+```
+P value is small hence we can reject null hypothesis and assume that increase in dosage has a postive effect on toothgrowth.
+
+
+# CONCLUSION
+INCREASE IN DOSAGE LEADS TO INCREASE IN TOOTH GROWTH.
