@@ -1,0 +1,73 @@
+---
+title: 'Peer-graded Assignment: Statistical Inference Course Project'
+author: "Aditya Lahiri"
+date: "February 14, 2018"
+output:
+  word_document: default
+  pdf_document: default
+---
+Overview: This report contains solutions to two parts of the coursera final project on statistical inference.
+Some statistical inference and basic analysis has been performed to achieve the result of the simultion.
+# PART 1  
+```{r}
+set.seed(10234)
+lambda <- 0.2
+n <- 40
+sims <-1000
+data<-replicate(sims,rexp(n, lambda))
+mean_data <-colMeans(data)
+```
+The sample mean is 
+```{r}
+mean(mean_data)
+```
+The theoretical mean is
+```{r}
+print(1/lambda)
+```
+The following graph provides a visualization for the simulation carried out in the code aboveGreen is for the theoretical mean and red is for the sample mean
+```{r}
+hist(mean_data, xlab = "mean", main = "Sample Mean versus Theoretical Mean")
+abline(v =mean(mean_data) , col = "red")
+abline(v =1/lambda , col = "green")
+```
+The sample mean is 4.975896 (red) and the theoretical mean is 5 (green) and hence they are very close to each other. 
+```{r}
+std_dev_sample <- sd(mean_data)
+std_dev_theor <- (1/lambda)/sqrt(n)
+var_sample <- std_dev_sample^2
+var_theor <- std_dev_theor^2
+```
+The sample variance is :
+```{r}
+var_sample
+```
+The Theoretical variance is:
+```{r}
+var_theor
+```
+The sample and theoretical variance are very close.
+```{r}
+x <- seq(min(mean_data), max(mean_data), length=100)
+y <- dnorm(x, mean=1/lambda, sd=(1/lambda/sqrt(n)))
+hist(mean_data,breaks=n,prob=T,col="red",xlab = "means",main="Density of means",ylab="density")
+lines(x, y, pch=22, col="black", lty=5)
+sample_conf_interval <- round (mean(mean_data) + c(-1,1)*1.96*sd(mean_data)/sqrt(n),3)
+theory_conf_interval <- (1/lambda) + c(-1,1)*1.96*sqrt(var_theor)/sqrt(n)
+```
+From the plot above we see the distribution follows a normal distribution. 
+Also note that the theoretical 95% confidence interval is:
+```{r}
+theory_conf_interval
+```
+and the sample 95% confidence interval is:
+```{r}
+sample_conf_interval
+```
+The confidence intervals are close enough. The following is the qq plot.
+```{r}
+qqnorm(mean_data); qqline(mean_data)
+```
+The theoretical quantiles match closely with the sample quantiles, so all these test prove the distribution is normal.
+
+
